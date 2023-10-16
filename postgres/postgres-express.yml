@@ -1,0 +1,32 @@
+version: "1"
+services:
+  db:
+    image: postgres
+    container_name: local_pgdb
+    restart: always
+    ports:
+      - "5432:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: rana
+    volumes:
+      - local_pgdata:/var/lib/postgresql/data
+  pgadmin:
+    image: dpage/pgadmin4
+    container_name: pgadmin4_container
+    restart: always
+    ports:
+      - "8888:80"
+    environment:
+      PGADMIN_DEFAULT_EMAIL: sandeep.rana@prospecta.com
+      PGADMIN_DEFAULT_PASSWORD: rana
+    volumes:
+      - pgadmin-data:/var/lib/pgadmin
+      
+networks:
+  default:
+    name: pgdb-network      
+
+volumes:
+  local_pgdata:
+  pgadmin-data:
