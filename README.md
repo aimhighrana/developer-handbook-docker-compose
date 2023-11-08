@@ -20,3 +20,7 @@ Docker compose for few developer handbook tools ..
     redis
     redislabs/redisinsight
 ```
+### jbpm-server
+```
+    Customiz jbpm-server with event handler
+```
