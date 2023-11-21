@@ -1,0 +1,36 @@
+cluster.name: "docker-cluster"
+network.host: 0.0.0.0
+discovery.type: single-node
+xpack:
+    license:
+        upload:
+            types:
+                - trial
+                - enterprise
+    security:
+        authc:
+            realms:
+                file:
+                    file1:
+                        order: -100
+                native:
+                    native1:
+                        order: -99
+            reserved_realm:
+                enabled: "false"
+        enabled: "true"
+        http:
+            ssl:
+                certificate: /usr/share/elasticsearch/config/ssl/ca.cert
+                certificate_authorities: /usr/share/elasticsearch/config/ssl/ca.cert
+                enabled: true
+                key: /usr/share/elasticsearch/config/ssl/key.key
+        # transport:
+        #     ssl:
+        #         certificate: /usr/share/elasticsearch/config/node-transport-cert/transport.tls.crt
+        #         certificate_authorities:
+        #             - /usr/share/elasticsearch/config/transport-certs/ca.crt
+        #             - /usr/share/elasticsearch/config/transport-remote-certs/ca.crt
+        #         enabled: "true"
+        #         key: /usr/share/elasticsearch/config/node-transport-cert/transport.tls.key
+        #         verification_mode: certificate

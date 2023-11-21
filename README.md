@@ -20,6 +20,13 @@ Docker compose for few developer handbook tools ..
     redis
     redislabs/redisinsight
 ```
+
+### Elastic search with https and basic auth
+```
+    docker.elastic.co/elasticsearch/elasticsearch
+```
+
+
 ### jbpm-server
 ```
     Customiz jbpm-server with event handler
