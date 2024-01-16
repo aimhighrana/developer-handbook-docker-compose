@@ -1,13 +1,13 @@
 version: "3"
 services:
   jbpm-server:
-    # build:
-    #   context: ./
-    #   dockerfile: Dockerfile
+    build:
+      context: ./
+      dockerfile: Dockerfile
     image: jboss/jbpm-server-full:latest
     container_name: jbpm-server
     ports:
-      - 8085:8080
+      - 8080:8080
       - 8001:8001
     environment:
       EXTRA_OPTS: '-Dorg.jbpm.ht.admin.group=admin -Dorg.uberfire.nio.git.ssh.host=0.0.0.0 -Dorg.kie.deployment.desc.location=file:/home/deployment-descriptor.xml'
