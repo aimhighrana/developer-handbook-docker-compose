@@ -1,0 +1,30 @@
+version: "3"
+services:
+  jenkins:
+    build:
+      context: ./jenkins
+      dockerfile: Dockerfile
+    image: ranasoftcraft/jenkins:latest
+    container_name: jenkins
+    ports:
+      - 50000:50000
+      - 8081:8080
+    environment:
+      - JAVA_OPTS='-Dhudson.plugins.git.GitSCM.ALLOW_LOCAL_CHECKOUT=true'
+      - DOCKER_CERT_PATH='/certs/client'
+      - DOCKER_TLS_VERIFY=1
+      - DOCKER_HOST='tcp://docker:2376'
+      
+  nexus:
+    image: sonatype/nexus3:latest
+    container_name: nexus
+    ports:
+      - 8082:8081
+
+networks:
+  default:
+    name: ci-network
+
+volumes:
+  ci-data:
+    driver: local
