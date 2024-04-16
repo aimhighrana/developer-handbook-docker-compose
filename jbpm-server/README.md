@@ -2,8 +2,8 @@
 
 ### Download own custom modified war files 
 ```
-Download business-central.war from https://drive.google.com/file/d/1R4d_p6hglz0Ipf_7dQOlm_Y7Sme-OYfg/view?usp=drive_link and place inside current folder
-Download kie-server.war from https://drive.google.com/file/d/1Fg38JEponlNUZOIIOrFQMLCAcnd5RoBK/view?usp=drive_link 
+Download business-central.war from https://drive.google.com/file/d/10sFJujKUuzKkbX3iKiTNHzH7Qn3gku1C/view?usp=sharing and place inside current folder
+Download kie-server.war from https://drive.google.com/file/d/1tASiTTTWsaUsUog5poLbpLKgRXhfysw3/view?usp=sharing 
 ```
 ### Build own image on top of  `jboss/jbpm-server-full:latest`
 ```
