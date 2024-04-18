@@ -1,0 +1,29 @@
+version: "1"
+services:
+  nginx:
+    build:
+        context: ./
+        dockerfile: Dockerfile
+    image: nginx:self
+    container_name: nginx-api-getway
+    ports:
+      - 80:80
+
+  user-profile:
+    image: sandeeprana001997/nginx-user-profile-microservice:latest
+    container_name: nginx-user-profile-microservice
+    ports:
+      - 7001:7001
+
+  user-account:
+    image: sandeeprana001997/nginx-user-account-microservice:latest
+    container_name: nginx-user-account-microservice
+    ports:
+      - 7002:7002
+
+networks:
+  default:
+    name: nginx-api-getway
+volumes:
+  nginx-api-getway:
+    driver: local
