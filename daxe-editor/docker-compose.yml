@@ -1,0 +1,106 @@
+version: '3'
+services:
+  postgres:
+    image: 'postgres:16'
+    command: postgres -c max_connections=2000
+    container_name: postgres16
+    ports:
+      - 5432:5432
+    env_file:
+      - ./postgres/postgres.env
+    volumes:
+      - ./postgres/postgres-data:/var/lib/postgresql/data
+      - ./postgres/create-database.sql:/docker-entrypoint-initdb.d/create-database.sql
+    networks:
+      - daxe-editor
+  
+  
+  rabbitmq:
+    image: 'rabbitmq:3.12-management'
+    container_name: rabbitmq
+    ports:
+      - '${rabbitmq_port1:-5672}'
+      - '${rabbitmq_port2:-15672}'
+    env_file:
+      - ./rabbitmq.env
+    networks:
+      - daxe-editor
+  
+  auth:
+    image: docker.prospecta.com/prospecta/mdo-auth:sandbox
+    container_name: mdo-auth
+    depends_on:
+      - postgres
+    ports:
+      - 6001:8080
+    env_file:
+      - ./postgres/postgres.env
+      - ./mdo-auth.env
+    
+    healthcheck:
+      test: "curl --fail --silent host.docker.internal:6001/auth/actuator/health/readiness | grep UP || exit 1"
+      interval: 10s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+    networks:
+      - daxe-editor
+    # volumes:
+    #   - ./common.properties:/home/jboss/application.properties
+      
+  ngx-mdo:
+    image: docker.prospecta.com/prospecta/ngx-mdo:sandbox
+    container_name: ngx-mdo
+    env_file:
+      - ./ngx-mdo.env
+    ports:
+      - 4202:8080
+    networks:
+      - daxe-editor
+  ngx-auth:
+    image: docker.prospecta.com/prospecta/ngx-auth:sandbox
+    container_name: ngx-auth
+    env_file:
+      - ./ngx-auth.env
+    ports:
+      - 4201:8080
+    networks:
+      - daxe-editor
+
+  daxe-ui:
+    image: sandeeprana001997/daxe-editor:working
+    container_name: daxe-ui
+    env_file:
+      - ./daxe-ui.env
+    ports:
+      - 4203:8080
+    networks:
+      - daxe-editor
+
+  nginx:
+    build:
+        context: ./nginx
+        dockerfile: Dockerfile
+    image: nginx:latest
+    container_name: nginx
+    ports:
+      - 8080:8080
+
+  script:
+    build:
+      context: ./script
+      dockerfile: Dockerfile
+    image: execute-script:latest
+    container_name: script
+    depends_on:
+      auth:
+        condition: service_healthy
+    env_file:
+      - ./postgres/postgres.env
+    networks:
+      - daxe-editor
+volumes:
+  postgres-data: null
+networks:
+  daxe-editor:
+    driver: bridge
