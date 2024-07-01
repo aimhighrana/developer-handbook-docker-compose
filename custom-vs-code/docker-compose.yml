@@ -1,0 +1,19 @@
+version: "3"
+services:
+  mdo-vscpde:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: mdo/custom-vscode:testing
+    container_name: mdo-vscpde
+    ports:
+      - 3000:3000
+    environment:
+      DEBUG: true
+networks:
+  default:
+    name: vscode-network
+
+volumes:
+  vscode-data:
+    driver: local

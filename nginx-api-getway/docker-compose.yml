@@ -6,8 +6,25 @@ services:
         dockerfile: Dockerfile
     image: nginx:self
     container_name: nginx-api-getway
+    # volumes:
+    #   - ./nginx.conf.template:/etc/nginx/conf.d/nginx.conf.template
+    
+    environment:
+      - jwt_secret=41-4D-49-54-20-53-48-41-52-4D-41
+
     ports:
       - 80:80
+    
+    # command: /bin/bash -c "envsubst < /etc/nginx/conf.d/nginx.conf.template > /etc/nginx/conf.d/default.conf && nginx -g 'daemon off;'"
+
+
+  auth:
+    image: sandeeprana001997/jwt-authentication:latest
+    container_name: nginx-jwt-authentication
+    ports:
+      - 7000:7000
+    env_file:
+      - ./properties.env
 
   user-profile:
     image: sandeeprana001997/nginx-user-profile-microservice:latest

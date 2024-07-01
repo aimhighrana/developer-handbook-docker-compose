@@ -1,0 +1,68 @@
+load_module modules/ngx_http_js_module.so;
+load_module /usr/lib/nginx/modules/ngx_http_auth_jwt_module.so;
+
+# JWT secret this will come from env property
+events {}
+http {
+  
+    auth_jwt_key "${jwt_secret}"; ## Init the jwt with same secret key as signing key
+    auth_jwt on; ## Enable by default
+  
+    
+    ## Rate limit for user-profile ms
+    limit_req_zone $binary_remote_addr zone=jwt-authentication:10m rate=2r/s;
+    
+    ## Rate limit for user-profile ms
+    limit_req_zone $binary_remote_addr zone=user-profile:10m rate=2r/s;
+
+    ## Rate limit for user-account ms
+    limit_req_zone $binary_remote_addr zone=user-account:10m rate=10r/s;
+
+    
+    
+
+    ## Auth server upstream
+    upstream jwt_authentication {
+      server host.docker.internal:7000;
+    }
+    
+    
+    upstream user_profile {
+      server host.docker.internal:7001;
+    }
+    
+    upstream user_account {
+        server host.docker.internal:7002;
+    }
+
+    
+    # Main server block to handle incoming requests
+    server {
+        
+        location /auth/login {
+            auth_jwt off; ## Of jwt check to create new token
+            limit_req zone=jwt-authentication burst=10 nodelay;
+            proxy_pass http://jwt_authentication;
+            proxy_set_header Host $host;
+        }
+       
+        location /user-profile {
+            limit_req zone=user-profile burst=10 nodelay;            
+            proxy_pass http://user_profile;
+            proxy_set_header Host $host;
+        }
+    
+        location /user-account {
+            limit_req zone=user-account;
+            proxy_pass http://user_account;
+            proxy_set_header Host $host;
+        }
+
+        location / {
+            auth_jwt off; ## By pass no need to check authentication 
+            return 200 'Welcome to nginx as an API Gateway!:)';
+        }
+    
+    }
+}
+
