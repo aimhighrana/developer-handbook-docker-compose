@@ -1,0 +1,32 @@
+version: "3"
+services:
+  rabbitmq:
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    image: sandeeprana001997/rabbitmq-3.11:ssl
+    container_name: rabbitmq-311-ssl
+    env_file:
+      - ./rabbitmq.env
+    volumes:
+      - ./rabbitmq_data:/var/lib/rabbitmq
+    ports:
+      - 5672:5672
+      - 15672:15672
+      - 5671:5671
+      - 15671:15671
+    deploy:
+      resources:
+        limits:
+          cpus: '0.50'
+          memory: 1G
+        reservations:
+          cpus: '0.25'
+          memory: 512MB
+networks:
+  default:
+    name: rabiitmq-ssl
+
+volumes:
+  rabiitmq-ssl:
+    driver: local
