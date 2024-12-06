@@ -47,9 +47,16 @@ http {
         }
        
         location /user-profile {
+            allow localhost;     # For example allow only localhost you can change based on need
+            allow 172.17.0.1/16;   # Allow an IP range
+            deny all;                  # Deny all others
+
             limit_req zone=user-profile burst=10 nodelay;            
             proxy_pass http://user_profile;
             proxy_set_header Host $host;
+
+            ## Dedicated error page
+            error_page 503 /profile503.html;
         }
     
         location /user-account {
@@ -61,6 +68,11 @@ http {
         location / {
             auth_jwt off; ## By pass no need to check authentication 
             return 200 'Welcome to nginx as an API Gateway!:)';
+        }
+
+        location = /profile503.html {
+            root /usr/share/nginx/html;
+            internal; ## Prevent direct access to this page
         }
     
     }
